@@ -1255,10 +1255,8 @@ function showChecklist() {
   document.getElementById('legend-sticky').style.display='block';
   document.getElementById('main').style.display='block';
   document.getElementById('print-view').style.display='none';
-  document.getElementById('mode-badge').textContent = mode==='anonymous'?'🔒 Anonymous':'💜 Profile';
-  renderCatNav();
-  renderLegend();
-  renderMain();
+  document.getElementById('mode-badge').textContent = mode==='anonymous'?'🔒 Anonymous':'🔄 Continuous';
+  switchCat('ALL');
 }
 function showPrint() {
   document.getElementById('intro').style.display='none';
