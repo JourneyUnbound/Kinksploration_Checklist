@@ -460,6 +460,7 @@ input  { font-family: inherit; }
 </div>
 
 <div id="all-items-view" style="display:none">
+  <div class="desc-card" id="all-desc-card"></div>
   <div class="all-sort-row">
     <span class="sort-lbl">Sort by</span>
     <button class="sort-btn active" onclick="setAllSort('alpha')" id="sort-alpha">A – Z</button>
@@ -848,7 +849,7 @@ const DATA = {
     ]
   },
   "Sensation & Touch": {
-    icon:"🌸",
+    icon:"👅",
     description:"How your body experiences and responds to physical sensation is deeply personal. Notice what draws you in — and what feels like a boundary. Both are information.",
     items:[
       {name:"Gentle touch and caressing",group:"Soft Sensation"},
@@ -874,7 +875,7 @@ const DATA = {
     ]
   },
   "Communication & Connection": {
-    icon:"🗣️",
+    icon:"📞️",
     description:"Communication is the heartbeat of healthy kink. These aren’t just activities — they’re the skills that make everything else possible and safe.",
     items:[
       {name:"Eye contact during intimacy",group:"Core Connection"},
@@ -899,7 +900,7 @@ const DATA = {
     ]
   },
   "Power Exchange": {
-    icon:"⚡",
+    icon:"😈",
     description:"Power exchange is one of the deepest forms of connection two people can share. Explore where you feel most alive — leading, following, or flowing between both.",
     items:[
       {name:"Taking the lead",group:"Foundational"},
@@ -947,7 +948,7 @@ const DATA = {
     ]
   },
   "Impact Play": {
-    icon:"✋",
+    icon:"💥",
     description:"Impact play ranges from the playful sting of a hand to the deep thud of a flogger. Your body knows what it wants — listen to it.",
     items:[
       {name:"Spanking – hand (gentle)",group:"Gentle"},
@@ -968,7 +969,7 @@ const DATA = {
     ]
   },
   "Role Play & Fantasy": {
-    icon:"🌙",
+    icon:"🐉",
     description:"Fantasy is where imagination meets desire. These are the stories your inner world wants to tell. No story is too wild, too soft, or too strange here.",
     items:[
       {name:"Light role play scenarios",group:"Exploratory"},
@@ -988,7 +989,7 @@ const DATA = {
     ]
   },
   "Exploration & Expression": {
-    icon:"✨",
+    icon:"🌈",
     description:"Self-expression through kink is deeply creative. This section is about how you want to show up in the world — and how you want to be seen.",
     items:[
       {name:"Wearing special clothing / lingerie",group:"Expression"},
@@ -1008,7 +1009,7 @@ const DATA = {
     ]
   },
   "Energy & Presence": {
-    icon:"🌊",
+    icon:"⚡",
     description:"Beyond the physical, kink can be a deeply spiritual and energetic experience. This section honours that quieter, deeper dimension of connection.",
     items:[
       {name:"Mindful awareness during intimacy",group:"Mindfulness"},
@@ -1025,7 +1026,7 @@ const DATA = {
     ]
   },
   "Sexual Activities": {
-    icon:"🔥",
+    icon:"👉👌",
     description:"Exploring the full spectrum of sexual expression — from tender intimacy to raw passion. Every act here is valid when it's consensual, communicated, and desired by all involved.",
     items:[
       {name:"Kissing",group:"Intimacy"},
@@ -1078,7 +1079,7 @@ const DATA = {
     ]
   },
   "Toys & Equipment": {
-    icon:"🎀",
+    icon:"⛓️",
     description:"From simple pleasure tools to complex devices — toys enhance sensation, expand possibility, and let you explore in ways bodies alone cannot. Start simple, explore at your pace.",
     items:[
       {name:"Vibrators",group:"Pleasure Toys"},
@@ -1107,7 +1108,7 @@ const DATA = {
     ]
   },
   "Body Features & Aesthetics": {
-    icon:"💎",
+    icon:"💋",
     description:"What draws our eye, what stirs desire — physical features and aesthetics that speak to us. Attraction is diverse, personal, and deeply valid in all its forms.",
     items:[
       {name:"Tattoos",group:"Body Modification"},
@@ -1125,7 +1126,7 @@ const DATA = {
     ]
   },
   "Fluids & Edge Play": {
-    icon:"💧",
+    icon:"💦",
     description:"Advanced and edge play involving bodily fluids and intense physical experiences. These practices require significant trust, communication, and often specialized knowledge for safety.",
     items:[
       {name:"Watersports / Golden showers",group:"Fluid Play"},
@@ -1139,7 +1140,7 @@ const DATA = {
     ]
   },
   "Gorean Lifestyle": {
-    icon:"🏛️",
+    icon:"⚔️",
     description:"Inspired by John Norman's Chronicles of Gor, this philosophy centers on structured power exchange, protocol, and Master/kajira (slave) dynamics. Gorean practices emphasize ritual, positions, and total submission within consensual relationships. This is a complete lifestyle for some practitioners.",
     items:[
       {name:"Gorean Master/Owner",group:"Gorean Roles"},
@@ -1307,10 +1308,6 @@ function renderLegend() {
   h += '</div>';
   // divider
   h += '<div class="legend-divider"></div>';
-  // Need
-  h += '<div class="legend-need">💚 Need = what this meets in you</div>';
-  // divider
-  h += '<div class="legend-divider"></div>';
   // Fetish filter
   h += '<div class="legend-fetish'+(fetishFilter?' active':'')+'" onclick="toggleFetishFilter()">✦ Fetish</div>';
 
@@ -1329,15 +1326,23 @@ function toggleFetishFilter() {
 }
 
 function toggleRatingFilter(value) {
-  ratingFilter = ratingFilter === value ? null : value;
-  renderLegend();
-  renderMain();
+    ratingFilter = ratingFilter === value ? null : value;
+    renderLegend();
+    if (activeCategory === 'ALL') {
+        renderAllItems();
+    } else {
+        renderMain();
+    }
 }
 
 function toggleLimitFilter(label) {
-  limitFilter = limitFilter === label ? null : label;
-  renderLegend();
-  renderMain();
+    limitFilter = limitFilter === label ? null : label;
+    renderLegend();
+    if (activeCategory === 'ALL') {
+        renderAllItems();
+    } else {
+        renderMain();
+    }
 }
 
 // ─── CATEGORY NAV ───────────────────────────────────────────────────────────
@@ -1368,6 +1373,7 @@ function switchCat(cat){
   if (cat === 'ALL') {
     document.getElementById('main').style.display='none';
     document.getElementById('all-items-view').style.display='block';
+	document.getElementById('all-desc-card').textContent = 'Browse all activities across every category. Use the toggles above to filter by rating, limits, or fetish. Click a filter again to clear it.';
     renderAllItems();
   } else {
     document.getElementById('main').style.display='block';
@@ -1635,25 +1641,10 @@ function setAllSort(s) {
 function renderAllItems() {
   let items = [...ITEM_INDEX];
 
-  // filter by search
+  // 1. filter by search
   if (searchQuery) {
     const q = searchQuery;
-    // Simple stemming: remove common suffixes to catch variations
-    const stem = (word) => {
-      return word.replace(/(?:ing|ed|s|er|ly)$/, '');
-    }
-
-  // Apply rating, limit, and fetish filters
-  if (ratingFilter !== null || limitFilter !== null || fetishFilter) {
-    items = items.filter(item => {
-      const s = selections[item.key] || emptyEntry();
-      let matches = true;
-      if (ratingFilter !== null && s.rating !== ratingFilter) matches = false;
-      if (limitFilter !== null && s.limit !== limitFilter) matches = false;
-      if (fetishFilter && !s.fetish) matches = false;
-      return matches;
-    });
-  };
+    const stem = (word) => word.replace(/(?:ing|ed|s|er|ly)$/, '');
     const qStem = stem(q);
     
     items = items.filter(item => {
@@ -1662,12 +1653,10 @@ function renderAllItems() {
       const group = item.group.toLowerCase();
       const tip = (TIPS[item.name] || '').toLowerCase();
       
-      // Direct match
       if (name.includes(q) || cat.includes(q) || group.includes(q) || tip.includes(q)) {
         return true;
       }
       
-      // Stemmed match for variations
       const nameStem = stem(name);
       const catStem = stem(cat);
       const groupStem = stem(group);
@@ -1678,7 +1667,19 @@ function renderAllItems() {
     });
   }
 
-  // sort
+  // 2. Apply rating, limit, and fetish filters
+  if (ratingFilter !== null || limitFilter !== null || fetishFilter) {
+    items = items.filter(item => {
+      const s = selections[item.key] || emptyEntry();
+      let matches = true;
+      if (ratingFilter !== null && s.rating !== ratingFilter) matches = false;
+      if (limitFilter !== null && s.limit !== limitFilter) matches = false;
+      if (fetishFilter && !s.fetish) matches = false;
+      return matches;
+    });
+  }
+
+  // 3. sort
   if (allSort === 'alpha') {
     items.sort((a, b) => a.name.localeCompare(b.name));
   } else if (allSort === 'category') {
@@ -1694,15 +1695,15 @@ function renderAllItems() {
       const sb = selections[b.key] || emptyEntry();
       const aHas = sa.rating != null || sa.experience || sa.limit ? 1 : 0;
       const bHas = sb.rating != null || sb.experience || sb.limit ? 1 : 0;
-      if (aHas !== bHas) return bHas - aHas; // rated first
+      if (aHas !== bHas) return bHas - aHas;
       return a.name.localeCompare(b.name);
     });
   }
 
-  // count
+  // 4. count
   document.getElementById('all-results-count').textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
 
-  // render
+  // 5. render
   if (items.length === 0) {
     document.getElementById('all-items-list').innerHTML = '<div class="no-results">Nothing found for "' + escHtml(searchQuery) + '"<br><small>Try a shorter or different term</small></div>';
     return;
@@ -1711,7 +1712,6 @@ function renderAllItems() {
   let html = '';
   let lastCat = null;
   items.forEach(item => {
-    // if sorted by category, show a group heading when cat changes
     if (allSort === 'category' && item.cat !== lastCat) {
       html += '<div class="group-heading">' + item.icon + ' ' + escHtml(item.cat) + '</div>';
       lastCat = item.cat;
@@ -1721,7 +1721,6 @@ function renderAllItems() {
   document.getElementById('all-items-list').innerHTML = html;
   attachCardListeners();
 }
-
 
 // ─── INIT ───────────────────────────────────────────────────────────────────
 showIntroScreen();
